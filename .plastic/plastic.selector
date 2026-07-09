@@ -1,0 +1,4 @@
+repository "Tynass-PFE/Tynass-PFE@11270166934221@cloud"
+  path "/"
+    br "/main"
+    co "/main"
