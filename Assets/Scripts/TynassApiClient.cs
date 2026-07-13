@@ -249,13 +249,13 @@ public class TynassApiClient : MonoBehaviour
         var payload = new EmployeeLoginPayload { accessCode = accessCode, pin = pin };
         var jsonBody = JsonUtility.ToJson(payload);
 
-        using var request = new UnityWebRequest($"{baseUrl}/employees/login", "POST");
+        using var request = new UnityWebRequest($"{baseUrl}/company/employees/login", "POST");
         request.uploadHandler   = new UploadHandlerRaw(System.Text.Encoding.UTF8.GetBytes(jsonBody));
         request.downloadHandler = new DownloadHandlerBuffer();
         request.SetRequestHeader("Content-Type", "application/json");
         request.SetRequestHeader("Authorization", $"Bearer {deviceToken}");
 
-        var json = await SendRequest(request, "/employees/login");
+        var json = await SendRequest(request, "/company/employees/login");
         if (json == null) return null;
 
         try { return JsonUtility.FromJson<EmployeeLoginResponse>(json); }
