@@ -1,4 +1,5 @@
 // TrainingMenuController.cs
+/*
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -59,4 +60,4 @@ public class TrainingMenuController : MonoBehaviour
             training._id, name, uniqueId);
         SceneManager.LoadScene("SimulationScene");
     }
-}
+}*/

@@ -104,3 +104,9 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Unity Version Control (Plastic SCM) / Collab
+.plastic/
+.collab/
+.collabignore
+UserSettings/

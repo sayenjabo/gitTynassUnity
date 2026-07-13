@@ -1,4 +1,5 @@
 ﻿// LoginController.cs — Attaché au Canvas de login
+/*
 public class LoginController : MonoBehaviour
 {
     [Header("UI References")]
@@ -52,4 +53,4 @@ public class LoginController : MonoBehaviour
         loginButton.interactable = !loading;
         loadingIndicator.SetActive(loading);
     }
-}
+}*/

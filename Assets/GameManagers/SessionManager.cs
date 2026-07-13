@@ -1,4 +1,5 @@
 ﻿// SessionManager.cs — Singleton persistant entre les scènes
+/*
 public class SessionManager : MonoBehaviour
 {
     public static SessionManager Instance { get; private set; }
@@ -61,4 +62,4 @@ public class EvaluationCriteria
     public string criteriaName;
     public bool passed;
     public float score;
-}
+}*/

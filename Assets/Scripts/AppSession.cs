@@ -1,16 +1,10 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 
-/// <summary>
-/// TynassIt — Global in-memory session state shared across all panels.
-///
-/// IMPORTANT: Your TynassApiClient already has its own SessionData class
-/// (the MongoDB session model). This class is for UI/navigation state only
-/// — the logged-in company, selected employee, active training, quiz progress.
-///
-/// TynassApiClient handles the token internally. Don't duplicate it here.
-/// </summary>
 public static class AppSession
 {
+    // ─── Device ───────────────────────────────────────────────────────────────
+    public static string DeviceToken { get; set; }
+
     // ─── Company (set after CompanyLogin) ─────────────────────────────────────
     public static string CompanyId { get; set; }
     public static string CompanyName { get; set; }
@@ -22,7 +16,7 @@ public static class AppSession
     public static string EmployeeName { get; set; }
     public static string EmployeeRole { get; set; }
     public static string EmployeeInitials { get; set; }
-    public static string EmployeeAvatarColor { get; set; } // hex string e.g. "#0048FF"
+    public static string EmployeeAvatarColor { get; set; }
     public static bool IsGuest { get; set; }
 
     // ─── Active training (set in ModulesPanel) ────────────────────────────────
@@ -38,6 +32,7 @@ public static class AppSession
     // ─── Clear on logout ──────────────────────────────────────────────────────
     public static void Clear()
     {
+        DeviceToken = null;
         CompanyId = null;
         CompanyName = null;
         CompanyEmail = null;

@@ -1,4 +1,5 @@
 ﻿// ApiManager.cs — Singleton réseau
+/*
 using System;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -143,4 +144,4 @@ public class SessionPayload
     public string employeeName;
     public string employeeUniqueId;
     public EvaluationCriteria[] evaluationCriteria;
-}
+}*/
