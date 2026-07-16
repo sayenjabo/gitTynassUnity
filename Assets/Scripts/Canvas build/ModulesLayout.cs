@@ -50,6 +50,9 @@ public class ModulesLayout : MonoBehaviour
     [Header("Font — TMP Font Asset")]
     [SerializeField] TMP_FontAsset font;
 
+    [Header("Sprites")]
+    [SerializeField] private Sprite uiSprite;
+
     // ── Public refs — auto-filled, read by ModulesPanel.cs ───────────────────
     [Header("Built refs — auto-filled")]
     public TMP_Text       CompanyInitials;
@@ -137,13 +140,25 @@ public class ModulesLayout : MonoBehaviour
 
         // ── Glow 1 — top right  600x600 at (250, 160) ────────────────────────
         var g1 = Make("Glow1", canvasRoot);
-        Place(g1, 250f, 160f, 600f, 600f);
-        Img(g1, new Color(0f,0.282f,1f,0.13f));
-
+        Place(g1, 360f, 240f, 700f, 700f);
+        var col = C("0048FF");
+        col.a = 0.025f;
+        var g1Img = Img(g1, col);
+        g1Img.type = UnityEngine.UI.Image.Type.Sliced;
+        g1Img.fillCenter = false;
+        g1Img.pixelsPerUnitMultiplier = 0.01f;
+        g1Img.sprite = uiSprite;
+        g1.localScale = new Vector3(3f, 3f, 3f);
         // ── Glow 2 — bottom left  400x400 at (-380, -210) ────────────────────
         var g2 = Make("Glow2", canvasRoot);
-        Place(g2, -380f, -210f, 400f, 400f);
-        Img(g2, new Color(0f,0.282f,1f,0.09f));
+        Place(g2, -434f, -218f, 450f, 450f);
+        col.a = 0.035f;
+        var g2Img = Img(g2, col);
+        g2Img.type = UnityEngine.UI.Image.Type.Sliced;
+        g2Img.fillCenter = false;
+        g2Img.pixelsPerUnitMultiplier = 0.01f;
+        g2Img.sprite = uiSprite;
+        g2.localScale = new Vector3(3f, 3f, 3f);
 
         // =====================================================================
         //  TOPBAR  — 1280x66 at (0, 327)
@@ -161,11 +176,11 @@ public class ModulesLayout : MonoBehaviour
 
         // Brand Name — at (-520, 8)
         var brandName = MakeTMP("BrandName", topbar, "TynassIt", 17f, FontStyles.Bold, WHITE);
-        Place(brandName, -516f, 8f, 120f, 24f); Align(brandName, TextAlignmentOptions.Left);
+        Place(brandName, -492f, 8f, 120f, 24f); Align(brandName, TextAlignmentOptions.Left);
 
         // Brand Sub — at (-516, -8)
         var brandSub = MakeTMP("BrandSub", topbar, "TRAINING PLATFORM", 9f, FontStyles.Normal, new Color(1f,1f,1f,0.35f));
-        Place(brandSub, -510f, -8f, 160f, 14f); Align(brandSub, TextAlignmentOptions.Left);
+        Place(brandSub, -474f, -8f, 126f, 14f); Align(brandSub, TextAlignmentOptions.Left);
         brandSub.characterSpacing = 2f;
 
         // Search Field — 300x52 at (0, 0) inside Topbar — centered

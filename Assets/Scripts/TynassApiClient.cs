@@ -229,6 +229,19 @@ public class TynassApiClient : MonoBehaviour
     // DEVICE ACTIVATION
     // ─────────────────────────────────────────
 
+    public async Task<List<TrainingData>> GetDeviceTrainings(string deviceToken)
+    {
+        using var request = UnityWebRequest.Get($"{baseUrl}/company/devices/trainings");
+        request.downloadHandler = new DownloadHandlerBuffer();
+        request.SetRequestHeader("Authorization", $"Bearer {deviceToken}");
+
+        var json = await SendRequest(request, "/company/devices/trainings");
+        if (json == null) return new List<TrainingData>();
+
+        try { return JsonUtility.FromJson<TrainingListWrapper>(json)?.trainings ?? new List<TrainingData>(); }
+        catch (Exception e) { Debug.LogError($"[API] Parse error: {e.Message}"); return new List<TrainingData>(); }
+    }
+
     public async Task<DeviceCheckResponse> CheckDevice(string metaUserId)
     {
         var payload = new MetaUserIdPayload { metaUserId = metaUserId };
