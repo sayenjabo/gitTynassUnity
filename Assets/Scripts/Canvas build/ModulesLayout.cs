@@ -199,7 +199,7 @@ public class ModulesLayout : MonoBehaviour
 
         // Company name at (20, 0) inside pill
         CompanyName = MakeTMP("CompanyName", pill, "Acme Corp", 13f, FontStyles.Bold, WHITE_75);
-        Place(CompanyName, 20f, 0f, 130f, 44f); Align(CompanyName, TextAlignmentOptions.Left);
+        Place(CompanyName, 18f, 0f, 130f, 44f); Align(CompanyName, TextAlignmentOptions.Left);
 
         // Topbar bottom separator
         var sep = Make("Separator", canvasRoot);
