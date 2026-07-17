@@ -1,49 +1,138 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 /// <summary>
-/// TynassIt — Settings Panel Logic
-/// Sliders use +/- buttons. Toggles use trigger press.
+/// TynassIt - Settings Panel Logic
+/// Assign all refs in Inspector. No auto-build. No FindExistingRefs.
 /// </summary>
 public class SettingsPanel : MonoBehaviour
 {
-    [Header("Panels")]
+    [Header("Navigation")]
     [SerializeField] private GameObject modulesPanel;
 
-    private SettingsLayout _layout;
+    [Header("Back Button")]
+    [SerializeField] private Button backBtn;
 
-    // State
-    private float _masterVol    = 0.75f;
-    private float _sfxVol       = 0.60f;
-    private float _narrVol      = 0.90f;
-    private bool  _muteAll      = false;
-    private bool  _spatialAudio = true;
-    private string _uiLang      = "FR";
-    private string _narrLang    = "FR";
-    private bool  _subtitles    = false;
-    private string _hand        = "Right";
-    private bool  _glowOn       = true;
-    private bool  _hapticOn     = true;
-    private string _selectMode  = "Trigger";
-    private float _dwellTime    = 0.5f;
-    private bool  _soundOn      = true;
+    [Header("Sidebar Buttons")]
+    [SerializeField] private Button sidebarAudio;
+    [SerializeField] private Button sidebarLanguage;
+    [SerializeField] private Button sidebarController;
+    [SerializeField] private Button sidebarSignOut;
+    [SerializeField] private Image  sidebarAudioBg;
+    [SerializeField] private Image  sidebarLanguageBg;
+    [SerializeField] private Image  sidebarControllerBg;
+
+    [Header("Panels")]
+    [SerializeField] private GameObject panelAudio;
+    [SerializeField] private GameObject panelLanguage;
+    [SerializeField] private GameObject panelController;
+
+    [Header("Audio - Master Volume")]
+    [SerializeField] private Button  masterMinus;
+    [SerializeField] private Button  masterPlus;
+    [SerializeField] private RectTransform masterFill;
+    [SerializeField] private TMP_Text masterVal;
+
+    [Header("Audio - SFX Volume")]
+    [SerializeField] private Button  sfxMinus;
+    [SerializeField] private Button  sfxPlus;
+    [SerializeField] private RectTransform sfxFill;
+    [SerializeField] private TMP_Text sfxVal;
+
+    [Header("Audio - Narration Volume")]
+    [SerializeField] private Button  narrMinus;
+    [SerializeField] private Button  narrPlus;
+    [SerializeField] private RectTransform narrFill;
+    [SerializeField] private TMP_Text narrVal;
+
+    [Header("Audio - Toggles")]
+    [SerializeField] private Button muteToggle;
+    [SerializeField] private Image  muteBg;
+    [SerializeField] private RectTransform muteKnob;
+    [SerializeField] private Button spatialToggle;
+    [SerializeField] private Image  spatialBg;
+    [SerializeField] private RectTransform spatialKnob;
+
+    [Header("Language - UI")]
+    [SerializeField] private Button langFR;
+    [SerializeField] private Button langEN;
+    [SerializeField] private Button langAR;
+
+    [Header("Language - Narration")]
+    [SerializeField] private Button narrFR;
+    [SerializeField] private Button narrEN;
+    [SerializeField] private Button narrAR;
+
+    [Header("Language - Subtitles")]
+    [SerializeField] private Button subtitleToggle;
+    [SerializeField] private Image  subtitleBg;
+    [SerializeField] private RectTransform subtitleKnob;
+
+    [Header("Controller - Hand")]
+    [SerializeField] private Button handRight;
+    [SerializeField] private Button handLeft;
+
+    [Header("Controller - Glow")]
+    [SerializeField] private Button glowToggle;
+    [SerializeField] private Image  glowBg;
+    [SerializeField] private RectTransform glowKnob;
+
+    [Header("Controller - Haptic")]
+    [SerializeField] private Button hapticToggle;
+    [SerializeField] private Image  hapticBg;
+    [SerializeField] private RectTransform hapticKnob;
+
+    [Header("Controller - Selection Mode")]
+    [SerializeField] private Button selectTrigger;
+    [SerializeField] private Button selectDwell;
+
+    [Header("Controller - Dwell Time")]
+    [SerializeField] private Button dwellMinus;
+    [SerializeField] private Button dwellPlus;
+    [SerializeField] private RectTransform dwellFill;
+    [SerializeField] private TMP_Text dwellVal;
+
+    [Header("Controller - Sound")]
+    [SerializeField] private Button soundToggle;
+    [SerializeField] private Image  soundBg;
+    [SerializeField] private RectTransform soundKnob;
+
+    [Header("Bottom Nav")]
+    [SerializeField] private Button signOutBtn;
+    [SerializeField] private Button discardBtn;
+    [SerializeField] private Button saveBtn;
+
+    [Header("Topbar")]
+    [SerializeField] private TMP_Text empName;
+    [SerializeField] private TMP_Text empInitials;
+
+    [Header("Slider Track Width")]
+    [SerializeField] private float trackWidth = 160f;
+
+    // ── State ─────────────────────────────────────────────────────────────────
+    private float  _masterVol    = 0.75f;
+    private float  _sfxVol       = 0.60f;
+    private float  _narrVol      = 0.90f;
+    private bool   _muteAll      = false;
+    private bool   _spatialAudio = true;
+    private string _uiLang       = "FR";
+    private string _narrLang     = "FR";
+    private bool   _subtitles    = false;
+    private string _hand         = "Right";
+    private bool   _glowOn       = true;
+    private bool   _hapticOn     = true;
+    private string _selectMode   = "Trigger";
+    private float  _dwellTime    = 0.5f;
+    private bool   _soundOn      = true;
 
     private const float VOL_STEP   = 0.05f;
     private const float DWELL_STEP = 0.1f;
     private const float DWELL_MIN  = 0.1f;
     private const float DWELL_MAX  = 2.0f;
 
-    void Awake() => _layout = GetComponent<SettingsLayout>();
-
     void OnEnable()
     {
-        _layout = GetComponent<SettingsLayout>();
-        if (_layout == null) { Debug.LogError("[SettingsPanel] SettingsLayout not found."); return; }
-
-        // Force refresh refs before anything else
-        if (_layout.PanelAudio == null)
-            _layout.RefreshRefs();
-
         LoadFromPrefs();
         WireButtons();
         ShowPanel("Audio");
@@ -52,15 +141,7 @@ public class SettingsPanel : MonoBehaviour
 
     void OnDisable()
     {
-        if (_layout == null) return;
-        _layout.SidebarAudio?.onClick.RemoveAllListeners();
-        _layout.SidebarLanguage?.onClick.RemoveAllListeners();
-        _layout.SidebarController?.onClick.RemoveAllListeners();
-        _layout.SidebarSignOut?.onClick.RemoveAllListeners();
-        _layout.BackBtn?.onClick.RemoveAllListeners();
-        _layout.SaveBtn?.onClick.RemoveAllListeners();
-        _layout.DiscardBtn?.onClick.RemoveAllListeners();
-        _layout.SignOutBtn?.onClick.RemoveAllListeners();
+        RemoveAllListeners();
     }
 
     // ─────────────────────────────────────────
@@ -68,94 +149,119 @@ public class SettingsPanel : MonoBehaviour
     // ─────────────────────────────────────────
     void WireButtons()
     {
-        // Sidebar navigation
-        _layout.SidebarAudio?.onClick.AddListener(() => ShowPanel("Audio"));
-        _layout.SidebarLanguage?.onClick.AddListener(() => ShowPanel("Language"));
-        _layout.SidebarController?.onClick.AddListener(() => ShowPanel("Controller"));
+        // Sidebar
+        sidebarAudio?.onClick.AddListener(() => ShowPanel("Audio"));
+        sidebarLanguage?.onClick.AddListener(() => ShowPanel("Language"));
+        sidebarController?.onClick.AddListener(() => ShowPanel("Controller"));
+        sidebarSignOut?.onClick.AddListener(OnSignOutClicked);
 
         // Back / Bottom nav
-        _layout.BackBtn?.onClick.AddListener(OnBackClicked);
-        _layout.SaveBtn?.onClick.AddListener(OnSaveClicked);
-        _layout.DiscardBtn?.onClick.AddListener(OnDiscardClicked);
-        _layout.SignOutBtn?.onClick.AddListener(OnSignOutClicked);
-        _layout.SidebarSignOut?.onClick.AddListener(OnSignOutClicked);
+        backBtn?.onClick.AddListener(OnBackClicked);
+        saveBtn?.onClick.AddListener(OnSaveClicked);
+        discardBtn?.onClick.AddListener(OnDiscardClicked);
+        signOutBtn?.onClick.AddListener(OnSignOutClicked);
 
-        // ── Audio — +/- buttons ───────────────────────────────────────────────
-        WireSliderButtons(_layout.MasterMinus, _layout.MasterPlus,
-            () => _masterVol, v => { _masterVol = v; SetSlider(_layout.MasterFill, _layout.MasterVal, _masterVol); });
+        // Master Volume
+        masterMinus?.onClick.AddListener(() => { _masterVol = Mathf.Clamp(_masterVol - VOL_STEP, 0f, 1f); UpdateSlider(masterFill, masterVal, _masterVol); });
+        masterPlus?.onClick.AddListener(()  => { _masterVol = Mathf.Clamp(_masterVol + VOL_STEP, 0f, 1f); UpdateSlider(masterFill, masterVal, _masterVol); });
 
-        WireSliderButtons(_layout.SfxMinus, _layout.SfxPlus,
-            () => _sfxVol, v => { _sfxVol = v; SetSlider(_layout.SfxFill, _layout.SfxVal, _sfxVol); });
+        // SFX Volume
+        sfxMinus?.onClick.AddListener(() => { _sfxVol = Mathf.Clamp(_sfxVol - VOL_STEP, 0f, 1f); UpdateSlider(sfxFill, sfxVal, _sfxVol); });
+        sfxPlus?.onClick.AddListener(()  => { _sfxVol = Mathf.Clamp(_sfxVol + VOL_STEP, 0f, 1f); UpdateSlider(sfxFill, sfxVal, _sfxVol); });
 
-        WireSliderButtons(_layout.NarrMinus, _layout.NarrPlus,
-            () => _narrVol, v => { _narrVol = v; SetSlider(_layout.NarrFill, _layout.NarrVal, _narrVol); });
+        // Narration Volume
+        narrMinus?.onClick.AddListener(() => { _narrVol = Mathf.Clamp(_narrVol - VOL_STEP, 0f, 1f); UpdateSlider(narrFill, narrVal, _narrVol); });
+        narrPlus?.onClick.AddListener(()  => { _narrVol = Mathf.Clamp(_narrVol + VOL_STEP, 0f, 1f); UpdateSlider(narrFill, narrVal, _narrVol); });
 
-        // ── Audio — Toggles ───────────────────────────────────────────────────
-        WireToggle(_layout.MuteBg,    _layout.MuteKnob,    () => _muteAll,     v => _muteAll = v);
-        WireToggle(_layout.SpatialBg, _layout.SpatialKnob, () => _spatialAudio, v => _spatialAudio = v);
+        // Mute Toggle
+        muteToggle?.onClick.AddListener(() => { _muteAll = !_muteAll; UpdateToggle(muteBg, muteKnob, _muteAll); });
 
-        // ── Language ──────────────────────────────────────────────────────────
-        _layout.LangFR?.onClick.AddListener(() => { _uiLang = "FR"; RefreshLanguage(); });
-        _layout.LangEN?.onClick.AddListener(() => { _uiLang = "EN"; RefreshLanguage(); });
-        _layout.LangAR?.onClick.AddListener(() => { _uiLang = "AR"; RefreshLanguage(); });
-        _layout.NarrFR?.onClick.AddListener(() => { _narrLang = "FR"; RefreshLanguage(); });
-        _layout.NarrEN?.onClick.AddListener(() => { _narrLang = "EN"; RefreshLanguage(); });
-        _layout.NarrAR?.onClick.AddListener(() => { _narrLang = "AR"; RefreshLanguage(); });
-        WireToggle(_layout.SubtitleBg, _layout.SubtitleKnob, () => _subtitles, v => _subtitles = v);
+        // Spatial Audio Toggle
+        spatialToggle?.onClick.AddListener(() => { _spatialAudio = !_spatialAudio; UpdateToggle(spatialBg, spatialKnob, _spatialAudio); });
 
-        // ── Controller ────────────────────────────────────────────────────────
-        _layout.HandRight?.onClick.AddListener(() => { _hand = "Right"; RefreshController(); });
-        _layout.HandLeft?.onClick.AddListener(() => { _hand = "Left";  RefreshController(); });
-        _layout.SelectTrigger?.onClick.AddListener(() => { _selectMode = "Trigger"; RefreshController(); });
-        _layout.SelectDwell?.onClick.AddListener(() => { _selectMode = "Dwell";   RefreshController(); });
-        WireToggle(_layout.GlowBg,   _layout.GlowKnob,   () => _glowOn,   v => _glowOn = v);
-        WireToggle(_layout.HapticBg, _layout.HapticKnob, () => _hapticOn, v => _hapticOn = v);
-        WireToggle(_layout.SoundBg,  _layout.SoundKnob,  () => _soundOn,  v => _soundOn = v);
+        // Language UI
+        langFR?.onClick.AddListener(() => { _uiLang = "FR"; RefreshLanguage(); });
+        langEN?.onClick.AddListener(() => { _uiLang = "EN"; RefreshLanguage(); });
+        langAR?.onClick.AddListener(() => { _uiLang = "AR"; RefreshLanguage(); });
 
-        WireSliderButtons(_layout.DwellMinus, _layout.DwellPlus,
-            () => _dwellTime, v => { _dwellTime = v; SetSlider(_layout.DwellFill, _layout.DwellVal, _dwellTime / DWELL_MAX); },
-            DWELL_STEP, DWELL_MIN, DWELL_MAX);
+        // Language Narration
+        narrFR?.onClick.AddListener(() => { _narrLang = "FR"; RefreshLanguage(); });
+        narrEN?.onClick.AddListener(() => { _narrLang = "EN"; RefreshLanguage(); });
+        narrAR?.onClick.AddListener(() => { _narrLang = "AR"; RefreshLanguage(); });
+
+        // Subtitles Toggle
+        subtitleToggle?.onClick.AddListener(() => { _subtitles = !_subtitles; UpdateToggle(subtitleBg, subtitleKnob, _subtitles); });
+
+        // Hand
+        handRight?.onClick.AddListener(() => { _hand = "Right"; RefreshController(); });
+        handLeft?.onClick.AddListener(()  => { _hand = "Left";  RefreshController(); });
+
+        // Glow Toggle
+        glowToggle?.onClick.AddListener(() => { _glowOn = !_glowOn; UpdateToggle(glowBg, glowKnob, _glowOn); });
+
+        // Haptic Toggle
+        hapticToggle?.onClick.AddListener(() => { _hapticOn = !_hapticOn; UpdateToggle(hapticBg, hapticKnob, _hapticOn); });
+
+        // Selection Mode
+        selectTrigger?.onClick.AddListener(() => { _selectMode = "Trigger"; RefreshController(); });
+        selectDwell?.onClick.AddListener(()   => { _selectMode = "Dwell";   RefreshController(); });
+
+        // Dwell Time
+        dwellMinus?.onClick.AddListener(() => { _dwellTime = Mathf.Clamp(_dwellTime - DWELL_STEP, DWELL_MIN, DWELL_MAX); UpdateSlider(dwellFill, dwellVal, _dwellTime / DWELL_MAX, true); });
+        dwellPlus?.onClick.AddListener(()  => { _dwellTime = Mathf.Clamp(_dwellTime + DWELL_STEP, DWELL_MIN, DWELL_MAX); UpdateSlider(dwellFill, dwellVal, _dwellTime / DWELL_MAX, true); });
+
+        // Sound Toggle
+        soundToggle?.onClick.AddListener(() => { _soundOn = !_soundOn; UpdateToggle(soundBg, soundKnob, _soundOn); });
     }
 
-    // ─────────────────────────────────────────
-    // WIRE HELPERS
-    // ─────────────────────────────────────────
-    void WireSliderButtons(Button minus, Button plus,
-        System.Func<float> getter, System.Action<float> setter,
-        float step = -1f, float min = 0f, float max = 1f)
+    void RemoveAllListeners()
     {
-        if (step < 0) step = VOL_STEP;
-        minus?.onClick.AddListener(() => setter(Mathf.Clamp(getter() - step, min, max)));
-        plus?.onClick.AddListener(()  => setter(Mathf.Clamp(getter() + step, min, max)));
+        sidebarAudio?.onClick.RemoveAllListeners();
+        sidebarLanguage?.onClick.RemoveAllListeners();
+        sidebarController?.onClick.RemoveAllListeners();
+        sidebarSignOut?.onClick.RemoveAllListeners();
+        backBtn?.onClick.RemoveAllListeners();
+        saveBtn?.onClick.RemoveAllListeners();
+        discardBtn?.onClick.RemoveAllListeners();
+        signOutBtn?.onClick.RemoveAllListeners();
+        masterMinus?.onClick.RemoveAllListeners();
+        masterPlus?.onClick.RemoveAllListeners();
+        sfxMinus?.onClick.RemoveAllListeners();
+        sfxPlus?.onClick.RemoveAllListeners();
+        narrMinus?.onClick.RemoveAllListeners();
+        narrPlus?.onClick.RemoveAllListeners();
+        muteToggle?.onClick.RemoveAllListeners();
+        spatialToggle?.onClick.RemoveAllListeners();
+        langFR?.onClick.RemoveAllListeners();
+        langEN?.onClick.RemoveAllListeners();
+        langAR?.onClick.RemoveAllListeners();
+        narrFR?.onClick.RemoveAllListeners();
+        narrEN?.onClick.RemoveAllListeners();
+        narrAR?.onClick.RemoveAllListeners();
+        subtitleToggle?.onClick.RemoveAllListeners();
+        handRight?.onClick.RemoveAllListeners();
+        handLeft?.onClick.RemoveAllListeners();
+        glowToggle?.onClick.RemoveAllListeners();
+        hapticToggle?.onClick.RemoveAllListeners();
+        selectTrigger?.onClick.RemoveAllListeners();
+        selectDwell?.onClick.RemoveAllListeners();
+        dwellMinus?.onClick.RemoveAllListeners();
+        dwellPlus?.onClick.RemoveAllListeners();
+        soundToggle?.onClick.RemoveAllListeners();
     }
-
-    void WireToggle(Image bg, Image knob, System.Func<bool> getter, System.Action<bool> setter)
-    {
-        var btn = bg?.GetComponent<Button>();
-        if (btn == null && bg != null)
-            btn = bg.gameObject.AddComponent<Button>();
-
-        btn?.onClick.AddListener(() =>
-        {
-            setter(!getter());
-            SetToggle(bg, knob, getter());
-        });
-    }
-
-
 
     // ─────────────────────────────────────────
     // SHOW PANEL
     // ─────────────────────────────────────────
     void ShowPanel(string panel)
     {
-        _layout.PanelAudio?.SetActive(panel == "Audio");
-        _layout.PanelLanguage?.SetActive(panel == "Language");
-        _layout.PanelController?.SetActive(panel == "Controller");
+        panelAudio?.SetActive(panel == "Audio");
+        panelLanguage?.SetActive(panel == "Language");
+        panelController?.SetActive(panel == "Controller");
 
-        SetSidebarActive(_layout.SidebarAudioBg,      panel == "Audio");
-        SetSidebarActive(_layout.SidebarLanguageBg,   panel == "Language");
-        SetSidebarActive(_layout.SidebarControllerBg, panel == "Controller");
+        SetSidebarActive(sidebarAudioBg,      panel == "Audio");
+        SetSidebarActive(sidebarLanguageBg,   panel == "Language");
+        SetSidebarActive(sidebarControllerBg, panel == "Controller");
     }
 
     void SetSidebarActive(Image bg, bool active)
@@ -171,14 +277,14 @@ public class SettingsPanel : MonoBehaviour
     // ─────────────────────────────────────────
     void RefreshAll()
     {
-        if (_layout.EmpName != null)     _layout.EmpName.text     = AppSession.EmployeeName ?? "";
-        if (_layout.EmpInitials != null) _layout.EmpInitials.text = AppSession.EmployeeInitials ?? "";
+        if (empName != null)     empName.text     = AppSession.EmployeeName     ?? "";
+        if (empInitials != null) empInitials.text = AppSession.EmployeeInitials ?? "";
 
-        SetSlider(_layout.MasterFill, _layout.MasterVal, _masterVol);
-        SetSlider(_layout.SfxFill,    _layout.SfxVal,    _sfxVol);
-        SetSlider(_layout.NarrFill,   _layout.NarrVal,   _narrVol);
-        SetToggle(_layout.MuteBg,     _layout.MuteKnob,    _muteAll);
-        SetToggle(_layout.SpatialBg,  _layout.SpatialKnob, _spatialAudio);
+        UpdateSlider(masterFill, masterVal, _masterVol);
+        UpdateSlider(sfxFill,    sfxVal,    _sfxVol);
+        UpdateSlider(narrFill,   narrVal,   _narrVol);
+        UpdateToggle(muteBg,     muteKnob,     _muteAll);
+        UpdateToggle(spatialBg,  spatialKnob,  _spatialAudio);
 
         RefreshLanguage();
         RefreshController();
@@ -186,42 +292,45 @@ public class SettingsPanel : MonoBehaviour
 
     void RefreshLanguage()
     {
-        SetOptionBtn(_layout.LangFR, _uiLang == "FR");
-        SetOptionBtn(_layout.LangEN, _uiLang == "EN");
-        SetOptionBtn(_layout.LangAR, _uiLang == "AR");
-        SetOptionBtn(_layout.NarrFR, _narrLang == "FR");
-        SetOptionBtn(_layout.NarrEN, _narrLang == "EN");
-        SetOptionBtn(_layout.NarrAR, _narrLang == "AR");
-        SetToggle(_layout.SubtitleBg, _layout.SubtitleKnob, _subtitles);
+        SetOptionBtn(langFR, _uiLang == "FR");
+        SetOptionBtn(langEN, _uiLang == "EN");
+        SetOptionBtn(langAR, _uiLang == "AR");
+        SetOptionBtn(narrFR, _narrLang == "FR");
+        SetOptionBtn(narrEN, _narrLang == "EN");
+        SetOptionBtn(narrAR, _narrLang == "AR");
+        UpdateToggle(subtitleBg, subtitleKnob, _subtitles);
     }
 
     void RefreshController()
     {
-        SetOptionBtn(_layout.HandRight,     _hand == "Right");
-        SetOptionBtn(_layout.HandLeft,      _hand == "Left");
-        SetOptionBtn(_layout.SelectTrigger, _selectMode == "Trigger");
-        SetOptionBtn(_layout.SelectDwell,   _selectMode == "Dwell");
-        SetToggle(_layout.GlowBg,    _layout.GlowKnob,   _glowOn);
-        SetToggle(_layout.HapticBg,  _layout.HapticKnob, _hapticOn);
-        SetToggle(_layout.SoundBg,   _layout.SoundKnob,  _soundOn);
-        SetSlider(_layout.DwellFill, _layout.DwellVal,   _dwellTime / DWELL_MAX);
+        SetOptionBtn(handRight,     _hand == "Right");
+        SetOptionBtn(handLeft,      _hand == "Left");
+        SetOptionBtn(selectTrigger, _selectMode == "Trigger");
+        SetOptionBtn(selectDwell,   _selectMode == "Dwell");
+        UpdateToggle(glowBg,    glowKnob,    _glowOn);
+        UpdateToggle(hapticBg,  hapticKnob,  _hapticOn);
+        UpdateToggle(soundBg,   soundKnob,   _soundOn);
+        UpdateSlider(dwellFill, dwellVal, _dwellTime / DWELL_MAX, true);
     }
 
     // ─────────────────────────────────────────
     // UI HELPERS
     // ─────────────────────────────────────────
-    void SetSlider(Image fill, TMPro.TMP_Text label, float value)
+    void UpdateSlider(RectTransform fill, TMP_Text label, float value, bool isDwell = false)
     {
         if (fill != null)
-        {
-            var rt = fill.GetComponent<RectTransform>();
-            if (rt != null) rt.anchorMax = new Vector2(Mathf.Clamp01(value), 1f);
-        }
+            fill.sizeDelta = new Vector2(trackWidth * Mathf.Clamp01(value), fill.sizeDelta.y);
+
         if (label != null)
-            label.text = Mathf.RoundToInt(value * 100f) + "%";
+        {
+            if (isDwell)
+                label.text = _dwellTime.ToString("F1") + "s";
+            else
+                label.text = Mathf.RoundToInt(value * 100f) + "%";
+        }
     }
 
-    void SetToggle(Image bg, Image knob, bool on)
+    void UpdateToggle(Image bg, RectTransform knob, bool on)
     {
         if (bg != null)
             bg.color = on
@@ -229,10 +338,7 @@ public class SettingsPanel : MonoBehaviour
                 : new Color(1f, 1f, 1f, 0.12f);
 
         if (knob != null)
-        {
-            var rt = knob.GetComponent<RectTransform>();
-            if (rt != null) rt.anchoredPosition = new Vector2(on ? 12f : -12f, 0f);
-        }
+            knob.anchoredPosition = new Vector2(on ? 13f : -13f, 0f);
     }
 
     void SetOptionBtn(Button btn, bool selected)
@@ -259,23 +365,21 @@ public class SettingsPanel : MonoBehaviour
 
     void OnSaveClicked()
     {
-        PlayerPrefs.SetFloat("vol_master",      _masterVol);
-        PlayerPrefs.SetFloat("vol_sfx",         _sfxVol);
-        PlayerPrefs.SetFloat("vol_narr",        _narrVol);
-        PlayerPrefs.SetInt("mute_all",          _muteAll ? 1 : 0);
-        PlayerPrefs.SetInt("spatial",           _spatialAudio ? 1 : 0);
-        PlayerPrefs.SetString("ui_lang",        _uiLang);
-        PlayerPrefs.SetString("narr_lang",      _narrLang);
-        PlayerPrefs.SetInt("subtitles",         _subtitles ? 1 : 0);
-        PlayerPrefs.SetString("hand",           _hand);
-        PlayerPrefs.SetString("select_mode",    _selectMode);
-        PlayerPrefs.SetFloat("dwell_time",      _dwellTime);
-        PlayerPrefs.SetInt("glow",              _glowOn ? 1 : 0);
-        PlayerPrefs.SetInt("haptic",            _hapticOn ? 1 : 0);
-        PlayerPrefs.SetInt("sound",             _soundOn ? 1 : 0);
+        PlayerPrefs.SetFloat("vol_master",   _masterVol);
+        PlayerPrefs.SetFloat("vol_sfx",      _sfxVol);
+        PlayerPrefs.SetFloat("vol_narr",     _narrVol);
+        PlayerPrefs.SetInt("mute_all",       _muteAll ? 1 : 0);
+        PlayerPrefs.SetInt("spatial",        _spatialAudio ? 1 : 0);
+        PlayerPrefs.SetString("ui_lang",     _uiLang);
+        PlayerPrefs.SetString("narr_lang",   _narrLang);
+        PlayerPrefs.SetInt("subtitles",      _subtitles ? 1 : 0);
+        PlayerPrefs.SetString("hand",        _hand);
+        PlayerPrefs.SetString("select_mode", _selectMode);
+        PlayerPrefs.SetFloat("dwell_time",   _dwellTime);
+        PlayerPrefs.SetInt("glow",           _glowOn ? 1 : 0);
+        PlayerPrefs.SetInt("haptic",         _hapticOn ? 1 : 0);
+        PlayerPrefs.SetInt("sound",          _soundOn ? 1 : 0);
         PlayerPrefs.Save();
-
-        Debug.Log("[SettingsPanel] Settings saved ✅");
         OnBackClicked();
     }
 
@@ -283,7 +387,6 @@ public class SettingsPanel : MonoBehaviour
     {
         LoadFromPrefs();
         RefreshAll();
-        Debug.Log("[SettingsPanel] Settings discarded");
     }
 
     void LoadFromPrefs()
@@ -309,7 +412,6 @@ public class SettingsPanel : MonoBehaviour
         AppSession.Clear();
         PlayerPrefs.DeleteKey("device_token");
         PlayerPrefs.Save();
-        Debug.Log("[SettingsPanel] Signed out");
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
     }
