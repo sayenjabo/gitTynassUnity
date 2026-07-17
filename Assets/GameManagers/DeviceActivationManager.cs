@@ -98,7 +98,8 @@ public class DeviceActivationManager : MonoBehaviour
         {
             string companyId = result.company?.id ?? result.companyId;
             Debug.Log($"[DeviceActivation] Casque activé ✅ — Company : {companyId}");
-            AppSession.CompanyId = companyId;
+            AppSession.CompanyId   = companyId;
+            AppSession.CompanyName = result.company?.companyName ?? "";
 
             // Stocker le deviceToken si présent (retourné une seule fois)
             if (!string.IsNullOrEmpty(result.deviceToken))
@@ -210,7 +211,8 @@ public class DeviceActivationManager : MonoBehaviour
             {
                 string companyId = result.company?.id ?? result.companyId;
                 Debug.Log($"[DeviceActivation] Casque activé ! ✅ Company: {companyId}");
-                AppSession.CompanyId = companyId;
+                AppSession.CompanyId   = companyId;
+                AppSession.CompanyName = result.company?.companyName ?? "";
 
                 // Stocker le deviceToken si présent (retourné une seule fois)
                 if (!string.IsNullOrEmpty(result.deviceToken))

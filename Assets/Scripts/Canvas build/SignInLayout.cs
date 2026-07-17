@@ -26,19 +26,19 @@ public class SignInLayout : MonoBehaviour
     [SerializeField] TMP_FontAsset font;
 
     [Header("Built refs — auto-filled, read by SignInPanel.cs")]
-    public Button         TabSignInBtn;
-    public Button         TabSignUpBtn;
-    public Image          TabSignInBg;
-    public Image          TabSignUpBg;
-    public TMP_Text       TabSignInLabel;
-    public TMP_Text       TabSignUpLabel;
+    public Button TabSignInBtn;
+    public Button TabSignUpBtn;
+    public Image TabSignInBg;
+    public Image TabSignUpBg;
+    public TMP_Text TabSignInLabel;
+    public TMP_Text TabSignUpLabel;
     public TMP_InputField EmailInput;
     public TMP_InputField PasswordInput;
-    public Button         ForgotPasswordBtn;
-    public Button         SignInBtn;
-    public TMP_Text       SignInBtnLabel;
-    public Button         QuestMailBtn;
-    public TMP_Text       ErrorText;
+    public Button ForgotPasswordBtn;
+    public Button SignInBtn;
+    public TMP_Text SignInBtnLabel;
+    public Button QuestMailBtn;
+    public TMP_Text ErrorText;
 
     // ─────────────────────────────────────────────────────────────────────────
     void Awake() => Build();
@@ -110,19 +110,19 @@ public class SignInLayout : MonoBehaviour
         Img(tabGroup, new Color(1f, 1f, 1f, 0.06f));
 
         // Tab Sign In — left | 192x44 | #0048FF active | (-100, 0) inside TabGroup
-        var tabInRect  = Make("Tab_SignIn", tabGroup);
+        var tabInRect = Make("Tab_SignIn", tabGroup);
         Place(tabInRect, -100f, 0f, 192f, 44f);
-        TabSignInBg    = Img(tabInRect, C("0048FF"));
-        TabSignInBtn   = tabInRect.gameObject.AddComponent<Button>();
+        TabSignInBg = Img(tabInRect, C("0048FF"));
+        TabSignInBtn = tabInRect.gameObject.AddComponent<Button>();
         TabSignInLabel = MakeTMP("Label", tabInRect, "Sign In", 16f, FontStyles.Bold, Color.white);
         Place(TabSignInLabel, 0f, 0f, 192f, 44f);
         Align(TabSignInLabel, TextAlignmentOptions.Center);
 
         // Tab Sign Up — right | 192x44 | transparent inactive | (100, 0) inside TabGroup
-        var tabUpRect  = Make("Tab_SignUp", tabGroup);
+        var tabUpRect = Make("Tab_SignUp", tabGroup);
         Place(tabUpRect, 100f, 0f, 192f, 44f);
-        TabSignUpBg    = Img(tabUpRect, Color.clear);
-        TabSignUpBtn   = tabUpRect.gameObject.AddComponent<Button>();
+        TabSignUpBg = Img(tabUpRect, Color.clear);
+        TabSignUpBtn = tabUpRect.gameObject.AddComponent<Button>();
         TabSignUpLabel = MakeTMP("Label", tabUpRect, "Sign Up", 16f, FontStyles.Bold, new Color(1f, 1f, 1f, 0.45f));
         Place(TabSignUpLabel, 0f, 0f, 192f, 44f);
         Align(TabSignUpLabel, TextAlignmentOptions.Center);
@@ -153,7 +153,7 @@ public class SignInLayout : MonoBehaviour
         var signInRect = Make("SignInBtn", card);
         Place(signInRect, 0f, -156f, 400f, 58f);
         Img(signInRect, C("0048FF"));
-        SignInBtn      = signInRect.gameObject.AddComponent<Button>();
+        SignInBtn = signInRect.gameObject.AddComponent<Button>();
         SignInBtnLabel = MakeTMP("Label", signInRect, "Sign In", 17f, FontStyles.Bold, Color.white);
         Place(SignInBtnLabel, 0f, 0f, 400f, 58f);
         Align(SignInBtnLabel, TextAlignmentOptions.Center);
@@ -211,11 +211,11 @@ public class SignInLayout : MonoBehaviour
 
     void Place(RectTransform rt, float x, float y, float w, float h)
     {
-        rt.anchorMin        = new Vector2(0.5f, 0.5f);
-        rt.anchorMax        = new Vector2(0.5f, 0.5f);
-        rt.pivot            = new Vector2(0.5f, 0.5f);
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
         rt.anchoredPosition = new Vector2(x, y);
-        rt.sizeDelta        = new Vector2(w, h);
+        rt.sizeDelta = new Vector2(w, h);
     }
 
     void Place(TMP_Text t, float x, float y, float w, float h)
@@ -239,7 +239,7 @@ public class SignInLayout : MonoBehaviour
     void Border(RectTransform rt, Color color)
     {
         var o = rt.gameObject.AddComponent<Outline>();
-        o.effectColor    = color;
+        o.effectColor = color;
         o.effectDistance = new Vector2(1.5f, 1.5f);
     }
 
@@ -248,11 +248,11 @@ public class SignInLayout : MonoBehaviour
     {
         var go = new GameObject(name, typeof(RectTransform));
         go.transform.SetParent(parent, false);
-        var t      = go.AddComponent<TextMeshProUGUI>();
-        t.text      = text;
-        t.fontSize  = size;
+        var t = go.AddComponent<TextMeshProUGUI>();
+        t.text = text;
+        t.fontSize = size;
         t.fontStyle = style;
-        t.color     = color;
+        t.color = color;
         if (font != null) t.font = font;
         return t;
     }
@@ -276,31 +276,31 @@ public class SignInLayout : MonoBehaviour
         vp.gameObject.AddComponent<RectMask2D>();
 
         // Text
-        var textGo       = Make("Text", vp);
+        var textGo = Make("Text", vp);
         Stretch(textGo);
-        var textComp     = textGo.gameObject.AddComponent<TextMeshProUGUI>();
-        textComp.color   = Color.white;
+        var textComp = textGo.gameObject.AddComponent<TextMeshProUGUI>();
+        textComp.color = Color.white;
         textComp.fontSize = 16f;
         textComp.alignment = TextAlignmentOptions.MidlineLeft;
         if (font != null) textComp.font = font;
 
         // Placeholder
-        var phGo       = Make("Placeholder", vp);
+        var phGo = Make("Placeholder", vp);
         Stretch(phGo);
-        var phComp     = phGo.gameObject.AddComponent<TextMeshProUGUI>();
-        phComp.text    = placeholder;
-        phComp.color   = new Color(1f, 1f, 1f, 0.20f);
+        var phComp = phGo.gameObject.AddComponent<TextMeshProUGUI>();
+        phComp.text = placeholder;
+        phComp.color = new Color(1f, 1f, 1f, 0.20f);
         phComp.fontSize = 16f;
         phComp.fontStyle = FontStyles.Italic;
         phComp.alignment = TextAlignmentOptions.MidlineLeft;
         if (font != null) phComp.font = font;
 
-        var field            = wrap.gameObject.AddComponent<TMP_InputField>();
-        field.textViewport   = vp;
-        field.textComponent  = textComp;
-        field.placeholder    = phComp;
-        field.caretColor     = C("0048FF");
-        field.caretWidth     = 2;
+        var field = wrap.gameObject.AddComponent<TMP_InputField>();
+        field.textViewport = vp;
+        field.textComponent = textComp;
+        field.placeholder = phComp;
+        field.caretColor = C("0048FF");
+        field.caretWidth = 2;
         field.selectionColor = new Color(0f, 0.282f, 1f, 0.35f);
 
         if (isPassword)
