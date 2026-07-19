@@ -344,11 +344,12 @@ public class SettingsPanel : MonoBehaviour
     void SetOptionBtn(Button btn, bool selected)
     {
         if (btn == null) return;
+
         var img = btn.GetComponent<Image>();
         if (img != null)
             img.color = selected
-                ? new Color(0f, 0.30f, 1f, 0.5f)  // sélectionné — bleu
-                : new Color(1f, 1f, 1f, 0f);     // normal — blanc transparent
+                ? new Color(0f, 0.30f, 1f, 0.5f)
+                : new Color(1f, 1f, 1f, 0f);
 
         var label = btn.transform.Find("L")?.GetComponent<TMP_Text>();
         if (label != null)
@@ -415,8 +416,8 @@ public class SettingsPanel : MonoBehaviour
 
     void OnSignOutClicked()
     {
+        // Keep device_token, CompanyId, CompanyName — they belong to the headset
         AppSession.Clear();
-        PlayerPrefs.DeleteKey("device_token");
         PlayerPrefs.Save();
         UnityEngine.SceneManagement.SceneManager.LoadScene(
             UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);

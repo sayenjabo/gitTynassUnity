@@ -16,6 +16,7 @@ public class ModulesPanel : MonoBehaviour
 
     [Header("Panels")]
     [SerializeField] private GameObject settingsPanel;
+    [SerializeField] private GameObject aboutPanel;
 
     private ModulesLayout _layout;
     private List<TrainingData> _trainings = new List<TrainingData>();
@@ -201,7 +202,11 @@ public class ModulesPanel : MonoBehaviour
 
     private void OnOverviewClicked()
     {
-        Debug.Log("[ModulesPanel] Training Overview clicked.");
+        if (aboutPanel != null)
+        {
+            gameObject.SetActive(false);
+            aboutPanel.SetActive(true);
+        }
     }
 
     // ─────────────────────────────────────────
