@@ -347,8 +347,14 @@ public class SettingsPanel : MonoBehaviour
         var img = btn.GetComponent<Image>();
         if (img != null)
             img.color = selected
-                ? new Color(0f, 0.282f, 1f, 0.9f)
-                : new Color(1f, 1f, 1f, 0.07f);
+                ? new Color(0f, 0.30f, 1f, 0.5f)  // sélectionné — bleu
+                : new Color(1f, 1f, 1f, 0f);     // normal — blanc transparent
+
+        var label = btn.transform.Find("L")?.GetComponent<TMP_Text>();
+        if (label != null)
+            label.color = selected
+                ? Color.white
+                : new Color(1f, 1f, 1f, 0.40f);
     }
 
     // ─────────────────────────────────────────
